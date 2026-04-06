@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ContentGen – Smart Social Media Studio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #f5f7fb; color: #1e293b; line-height: 1.5; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    .navbar { display: flex; justify-content: space-between; align-items: center; padding: 24px 0; flex-wrap: wrap; gap: 20px; }
+    .logo { font-size: 28px; font-weight: 800; background: linear-gradient(135deg, #4f46e5, #ec4899); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .nav-links { display: flex; gap: 28px; align-items: center; }
+    .nav-links a { text-decoration: none; color: #475569; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: #4f46e5; }
+    .btn-outline { border: 1px solid #cbd5e1; background: white; padding: 8px 20px; border-radius: 40px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+    .btn-outline:hover { border-color: #4f46e5; background: #f8fafc; }
+    .btn-primary { background: linear-gradient(135deg, #4f46e5, #ec4899); border: none; color: white; padding: 10px 24px; border-radius: 40px; font-weight: 600; cursor: pointer; transition: opacity 0.2s, transform 0.1s; }
+    .btn-primary:hover { opacity: 0.9; transform: scale(0.98); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+    .hero { text-align: center; padding: 60px 0 40px; }
+    .hero h1 { font-size: 48px; font-weight: 800; background: linear-gradient(135deg, #1e293b, #4f46e5); -webkit-background-clip: text; background-clip: text; color: transparent; max-width: 700px; margin: 0 auto 20px; }
+    .hero p { font-size: 18px; color: #475569; max-width: 550px; margin: 0 auto 32px; }
+    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 28px; margin: 60px 0; }
+    .feature-card { background: white; border-radius: 28px; padding: 24px; box-shadow: 0 8px 20px rgba(0,0,0,0.03); border: 1px solid #eef2ff; transition: all 0.2s; }
+    .feature-card:hover { border-color: #c7d2fe; transform: translateY(-4px); }
+    .feature-icon { font-size: 36px; margin-bottom: 16px; }
+    .feature-card h3 { font-size: 20px; margin-bottom: 8px; }
+    .feature-card p { color: #64748b; font-size: 14px; }
+    .generator-card { background: white; border-radius: 32px; box-shadow: 0 20px 35px -12px rgba(0,0,0,0.08); margin: 40px 0 80px; padding: 40px; }
+    .generator-card h2 { font-size: 28px; margin-bottom: 8px; }
+    .sub { color: #64748b; margin-bottom: 28px; }
+    .topic-input { width: 100%; padding: 14px 18px; font-size: 16px; border: 1px solid #e2e8f0; border-radius: 20px; font-family: inherit; resize: vertical; margin-bottom: 28px; transition: border 0.2s; }
+    .topic-input:focus { outline: none; border-color: #4f46e5; box-shadow: 0 0 0 3px rgba(79,70,229,0.1); }
+    .platform-group { margin-bottom: 32px; }
+    .platform-group label { font-weight: 600; display: block; margin-bottom: 12px; }
+    .platform-grid { display: flex; flex-wrap: wrap; gap: 12px; }
+    .platform-check { display: flex; align-items: center; gap: 8px; background: #f8fafc; padding: 8px 16px; border-radius: 40px; border: 1px solid #e2e8f0; cursor: pointer; transition: all 0.2s; }
+    .platform-check:hover { background: #f1f5f9; border-color: #cbd5e1; }
+    .platform-check input { margin: 0; width: 18px; height: 18px; accent-color: #4f46e5; }
+    .action-bar { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 32px; }
+    .output-area { background: #f8fafc; border-radius: 24px; padding: 24px; margin-top: 24px; border: 1px solid #eef2ff; }
+    .tabs { display: flex; flex-wrap: wrap; gap: 6px; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 20px; }
+    .tab-btn { background: transparent; border: none; padding: 6px 16px; border-radius: 40px; font-weight: 500; cursor: pointer; color: #475569; transition: all 0.2s; }
+    .tab-btn.active { background: #e0e7ff; color: #4f46e5; }
+    .content-preview { white-space: pre-wrap; font-size: 15px; line-height: 1.6; max-height: 400px; overflow-y: auto; padding: 4px; }
+    .error-message { background: #fee2e2; color: #b91c1c; padding: 12px 18px; border-radius: 16px; margin-top: 16px; font-size: 14px; display: none; }
+    .toast { position: fixed; bottom: 24px; right: 24px; background: #1e293b; color: white; padding: 12px 20px; border-radius: 40px; font-size: 14px; opacity: 0; transition: opacity 0.2s; pointer-events: none; z-index: 1000; }
+    footer { text-align: center; padding: 32px 0; border-top: 1px solid #eef2ff; color: #64748b; font-size: 14px; }
+    @media (max-width: 640px) { .hero h1 { font-size: 32px; } .generator-card { padding: 24px; } }
+  </style>
+</head>
+<body>
+<div class="container">
+  <nav class="navbar">
+    <div class="logo">ContentGen</div>
+    <div class="nav-links">
+      <a href="#">Features</a>
+      <a href="#">Pricing</a>
+      <button class="btn-outline" id="connectBtn">Connect Accounts</button>
+    </div>
+  </nav>
+
+  <div class="hero">
+    <h1>AI that writes perfectly for each platform</h1>
+    <p>Describe your topic once. We'll generate optimized posts for Instagram, LinkedIn, Twitter, Facebook, and more – automatically.</p>
+    <button class="btn-primary" id="scrollBtn">Get Started →</button>
+  </div>
+
+  <div class="features">
+    <div class="feature-card"><div class="feature-icon">🎯</div><h3>Auto‑Optimized</h3><p>No sliders or tone pickers. AI decides length, hashtags, and voice per platform.</p></div>
+    <div class="feature-card"><div class="feature-icon">⚡</div><h3>One‑Click Publish</h3><p>Post to all selected platforms instantly or schedule for later.</p></div>
+    <div class="feature-card"><div class="feature-icon">📈</div><h3>Analytics Ready</h3><p>Track engagement and refine your strategy over time.</p></div>
+  </div>
+
+  <div class="generator-card" id="generatorSection">
+    <h2>Generate content</h2>
+    <div class="sub">What's your topic? Select platforms – we'll do the rest.</div>
+
+    <textarea id="topicInput" class="topic-input" rows="3" placeholder="e.g., 'Launching an eco-friendly water bottle', 'Benefits of morning meditation for remote workers', 'Top 5 AI tools for content creators'..."></textarea>
+
+    <div class="platform-group">
+      <label>Select social platforms (AI will optimize each)</label>
+      <div class="platform-grid" id="platformGrid"></div>
+    </div>
+
+    <div class="action-bar">
+      <button id="generateBtn" class="btn-primary">✨ Generate Content</button>
+      <button id="publishBtn" class="btn-outline">📤 Publish All</button>
+      <button id="scheduleBtn" class="btn-outline">🗓️ Schedule</button>
+    </div>
+
+    <div id="outputArea" class="output-area" style="display: none;">
+      <div class="tabs" id="tabsContainer"></div>
+      <div id="contentDisplay" class="content-preview"></div>
+    </div>
+    <div id="errorMsg" class="error-message"></div>
+  </div>
+  <footer>© 2025 ContentGen – AI Social Media Studio. Content optimized automatically.</footer>
+</div>
+<div id="toast" class="toast">Copied!</div>
+
+<script>
+  const API_BASE = 'http://localhost:3001';
+  const PLATFORMS = ['instagram', 'facebook', 'linkedin', 'twitter', 'pinterest', 'threads', 'youtube', 'tiktok', 'wordpress'];
+  let currentGeneratedContent = null;
+
+  function renderPlatforms() {
+    const container = document.getElementById('platformGrid');
+    container.innerHTML = PLATFORMS.map(p => `<label class="platform-check"><input type="checkbox" value="${p}"> ${p.charAt(0).toUpperCase() + p.slice(1)}</label>`).join('');
+  }
+
+  function getSelectedPlatforms() {
+    return Array.from(document.querySelectorAll('#platformGrid input:checked')).map(cb => cb.value);
+  }
+
+  function showToast(msg, isError = false) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.style.background = isError ? '#b91c1c' : '#1e293b';
+    toast.style.opacity = '1';
+    setTimeout(() => toast.style.opacity = '0', 2500);
+  }
+
+  function showError(msg) {
+    const errDiv = document.getElementById('errorMsg');
+    errDiv.textContent = msg;
+    errDiv.style.display = 'block';
+    setTimeout(() => errDiv.style.display = 'none', 5000);
+  }
+
+  async function generateContent() {
+    const topic = document.getElementById('topicInput').value.trim();
+    if (!topic) return showError('Please enter a topic first.');
+    const platforms = getSelectedPlatforms();
+    if (!platforms.length) return showError('Select at least one platform.');
+
+    const genBtn = document.getElementById('generateBtn');
+    genBtn.disabled = true;
+    genBtn.textContent = '⏳ Generating...';
+
+    try {
+      const res = await fetch(`${API_BASE}/api/generate/platforms`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ topic, platforms })
+      });
+      if (!res.ok) throw new Error(`Server ${res.status}`);
+      const data = await res.json();
+      if (!data.success) throw new Error(data.error);
+      currentGeneratedContent = data.content;
+      displayTabsAndContent(currentGeneratedContent);
+      showToast('Content generated successfully!');
+    } catch (err) {
+      showError('Generation failed: ' + err.message);
+      showToast('Generation failed', true);
+    } finally {
+      genBtn.disabled = false;
+      genBtn.textContent = '✨ Generate Content';
+    }
+  }
+
+  function displayTabsAndContent(contentMap) {
+    const outputArea = document.getElementById('outputArea');
+    const tabsContainer = document.getElementById('tabsContainer');
+    const contentDiv = document.getElementById('contentDisplay');
+    outputArea.style.display = 'block';
+    tabsContainer.innerHTML = '';
+    const platforms = Object.keys(contentMap);
+    platforms.forEach((plat, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'tab-btn' + (idx === 0 ? ' active' : '');
+      btn.textContent = plat.toUpperCase();
+      btn.onclick = () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        contentDiv.textContent = contentMap[plat] || 'No content';
+      };
+      tabsContainer.appendChild(btn);
+    });
+    if (platforms.length) contentDiv.textContent = contentMap[platforms[0]];
+  }
+
+  async function publishAll() {
+    if (!currentGeneratedContent) return showError('No content. Generate first.');
+    const userId = 'demo-user';
+    try {
+      const res = await fetch(`${API_BASE}/api/publish`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, platformsContent: currentGeneratedContent })
+      });
+      const data = await res.json();
+      if (data.success) showToast('✅ Published to all platforms (stub).');
+      else showToast('Publish failed', true);
+    } catch (err) { showToast('Error: ' + err.message, true); }
+  }
+
+  function scheduleLater() { alert('Scheduling UI coming soon. Backend endpoint is ready.'); }
+  function connectAccounts() { alert('OAuth integration will be added soon.'); }
+
+  document.getElementById('scrollBtn').addEventListener('click', () => document.getElementById('generatorSection').scrollIntoView({ behavior: 'smooth' }));
+  document.getElementById('generateBtn').addEventListener('click', generateContent);
+  document.getElementById('publishBtn').addEventListener('click', publishAll);
+  document.getElementById('scheduleBtn').addEventListener('click', scheduleLater);
+  document.getElementById('connectBtn').addEventListener('click', connectAccounts);
+
+  renderPlatforms();
+</script>
+</body>
+</html>
